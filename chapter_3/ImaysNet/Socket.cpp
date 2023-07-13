@@ -132,6 +132,8 @@ int Socket::Accept(Socket& acceptedSocket, string& errorText)
 
 #ifdef _WIN32
 
+GUID GuidAcceptEx = WSAID_ACCEPTEX; // WSAID_ACCEPTEX 또한 MSWSOCK.H 에 정의되어있다.
+
 // 성공하면 true, 실패하면 false를 리턴합니다.
 // errorText에는 실패시 에러내용이 텍스트로  채워집니다.
 // acceptCandidateSocket에는 이미 만들어진 소켓 핸들이 들어가며, accept이 되고 나면 이 소켓 핸들은 TCP 연결 객체로 변신합니다.
@@ -144,8 +146,10 @@ bool Socket::AcceptOverlapped(Socket& acceptCandidateSocket, string& errorText)
 		// 함수 포인터를 먼저 가져온 다음 호출할 수 있다. 그것을 여기서 한다.
 		WSAIoctl(m_fd,
 			SIO_GET_EXTENSION_FUNCTION_POINTER,
-			&UUID(WSAID_ACCEPTEX),
-			sizeof(UUID),
+			&GuidAcceptEx,
+			sizeof(GuidAcceptEx),
+			//&UUID(WSAID_ACCEPTEX),
+			//sizeof(UUID),
 			&AcceptEx,
 			sizeof(AcceptEx),
 			&bytes,
